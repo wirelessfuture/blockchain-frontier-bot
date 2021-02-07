@@ -2,14 +2,14 @@ from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
 
 
-def check_server(func: any) -> bool:
+def check_server(func: any) -> any:
     """Decorator for checking the coingecko API status before each request"""
-    def wrapper():
+    def wrapper_is_server_ok():
         if cg.ping()["gecko_says"] == "(V3) To the Moon!":
-            func()
+            return func()
         else:
             return {"error": "Server is currently experiencing issues"}
-    return func
+    return wrapper_is_server_ok
 
 @check_server
 def get_eth_price() -> dict:
