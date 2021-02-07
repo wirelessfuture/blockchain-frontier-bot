@@ -20,3 +20,16 @@ def get_eth_price() -> dict:
 def get_trending_search() -> dict:
     """Get trending search coins (Top-7) on CoinGecko in the last 24 hours."""
     return cg.get_search_trending()
+
+@check_server
+def get_percentage_data() -> dict:
+    """Get the latest percentage data in various time ranges."""
+    return cg.get_coin_by_id(
+        id="ethereum", 
+        localization_string=False, 
+        tickers=False, 
+        market_data=True, 
+        community_data=False, 
+        developer_data=False, 
+        sparkline=False
+    )
