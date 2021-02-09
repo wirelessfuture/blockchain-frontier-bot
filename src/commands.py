@@ -24,12 +24,12 @@ from entities import (
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        '/trending to get the latest trending searches\n'\
-        '/ethprice to check the price of ETH\n'\
-        '/ethpercentage to get ETH price percentage data\n'\
-        '/btcprice to check the price of BTC\n'\
-        '/btcpercentage to get BTC price percentage data\n'\
-        '/gigachad to get prices of the Gigachad list\n'\
+        '/trending - Latest trending searches\n'\
+        '/ethprice - Price of ETH\n'\
+        '/ethpercentage - ETH price change %\n'\
+        '/btcprice - Price of BTC\n'\
+        '/btcpercentage - BTC price change %\n'\
+        '/gigachad - Gigachad R&D\n'\
     )
 
 def trending_command(update: Update, context: CallbackContext) -> None:
@@ -53,26 +53,20 @@ def eth_price_command(update: Update, context: CallbackContext) -> None:
 
 def eth_percentage_command(update: Update, context: CallbackContext) -> None:
     """Sends a message when the command /percentage is issued."""
+    percentage_keys = [
+        "price_change_percentage_24h",
+        "price_change_percentage_7d",
+        "price_change_percentage_14d",
+        "price_change_percentage_30d",
+        "price_change_percentage_60d",
+        "price_change_percentage_200d",
+        "price_change_percentage_1y",
+    ]
     new_percentage = get_eth_percentage_change()
     if "error" not in new_percentage:
-        market_data = new_percentage["market_data"]
-        price_change_24h = market_data["price_change_percentage_24h"]
-        price_change_7d = market_data["price_change_percentage_7d"]
-        price_change_14d = market_data["price_change_percentage_14d"]
-        price_change_30d = market_data["price_change_percentage_30d"]
-        price_change_60d = market_data["price_change_percentage_60d"]
-        price_change_200d = market_data["price_change_percentage_200d"]
-        price_change_1y = market_data["price_change_percentage_1y"]
-        update.message.reply_text(
-            f'ETH Price Change:\n'\
-            f'24h:  {price_change_24h}%\n'\
-            f'7d:  {price_change_7d}%\n'\
-            f'14d:  {price_change_14d}%\n'\
-            f'30d:  {price_change_30d}%\n'\
-            f'60d:  {price_change_60d}%\n'\
-            f'200d:  {price_change_200d}%\n'\
-            f'1y:  {price_change_1y}%\n'\
-        )
+        percentages = [f'{key.split("_")[-1]}: {value}%\n' for key, value in new_percentage["market_data"].items() if key in percentage_keys]
+        percentages.insert(0, 'ETH Price Change %\n')
+        update.message.reply_text(''.join(percentages))
     else:
         update.message.reply_text(new_percentage["error"])
 
@@ -87,26 +81,20 @@ def btc_price_command(update: Update, context: CallbackContext) -> None:
 
 def btc_percentage_command(update: Update, context: CallbackContext) -> None:
     """Sends a message when the command /btcpercentage is issued."""
+    percentage_keys = [
+        "price_change_percentage_24h",
+        "price_change_percentage_7d",
+        "price_change_percentage_14d",
+        "price_change_percentage_30d",
+        "price_change_percentage_60d",
+        "price_change_percentage_200d",
+        "price_change_percentage_1y",
+    ]
     new_percentage = get_btc_percentage_change()
     if "error" not in new_percentage:
-        market_data = new_percentage["market_data"]
-        price_change_24h = market_data["price_change_percentage_24h"]
-        price_change_7d = market_data["price_change_percentage_7d"]
-        price_change_14d = market_data["price_change_percentage_14d"]
-        price_change_30d = market_data["price_change_percentage_30d"]
-        price_change_60d = market_data["price_change_percentage_60d"]
-        price_change_200d = market_data["price_change_percentage_200d"]
-        price_change_1y = market_data["price_change_percentage_1y"]
-        update.message.reply_text(
-            f'BTC Price Change:\n'\
-            f'24h:  {price_change_24h}%\n'\
-            f'7d:  {price_change_7d}%\n'\
-            f'14d:  {price_change_14d}%\n'\
-            f'30d:  {price_change_30d}%\n'\
-            f'60d:  {price_change_60d}%\n'\
-            f'200d:  {price_change_200d}%\n'\
-            f'1y:  {price_change_1y}%\n'\
-        )
+        percentages = [f'{key.split("_")[-1]}: {value}%\n' for key, value in new_percentage["market_data"].items() if key in percentage_keys]
+        percentages.insert(0, 'BTC Price Change %\n')
+        update.message.reply_text(''.join(percentages))
     else:
         update.message.reply_text(new_percentage["error"])
 
