@@ -3,7 +3,6 @@ import logging
 import os
 
 # Import telegram modules
-from telegram import Update
 from telegram.ext import (
     Updater, 
     CommandHandler
@@ -27,26 +26,32 @@ from commands import (
     eth_percentage_command,
     btc_price_command,
     btc_percentage_command,
-    gigachad_command
+    gigachad_command,
+    ada_price_command,
+    eth_gas_command,
+    defipulse_command
 )
 
 
 def main():
     """Start the bot."""
     # Create the Updater and pass it your bot's token.
-    updater = Updater(os.getenv("BOT_TOKEN"))
+    updater = Updater(os.getenv("TELEGRAM_BOT_TOKEN"))
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("help", help_command))
+    dispatcher.add_handler(CommandHandler("ethgas", eth_gas_command))
+    dispatcher.add_handler(CommandHandler("defipulse", defipulse_command))
     dispatcher.add_handler(CommandHandler("trending", trending_command))
     dispatcher.add_handler(CommandHandler("ethprice", eth_price_command))
     dispatcher.add_handler(CommandHandler("ethpercentage", eth_percentage_command))
     dispatcher.add_handler(CommandHandler("btcprice", btc_price_command))
     dispatcher.add_handler(CommandHandler("btcpercentage", btc_percentage_command))
     dispatcher.add_handler(CommandHandler("gigachad", gigachad_command))
+    dispatcher.add_handler(CommandHandler("adaprice", ada_price_command))
 
     # Start the Bot
     updater.start_polling()

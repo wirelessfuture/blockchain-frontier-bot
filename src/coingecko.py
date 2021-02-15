@@ -59,10 +59,15 @@ def get_gigachad_prices() -> dict:
         "flash-stake",
         "xio",
         "mettalex",
-        "muse",
-        "origintrail"
+        "origintrail",
+        "rocket-pool"
     ]
     price_dict = {}
     for token in gigachad_list:
         price_dict[token] = cg.get_price(ids=token, vs_currencies='usd')[token]
     return price_dict
+
+@check_server
+def get_ada_price() -> dict:
+    """Get the latest Ada price."""
+    return cg.get_price(ids='cardano', vs_currencies='usd,gbp,czk,aud')
