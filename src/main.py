@@ -21,15 +21,11 @@ logger = logging.getLogger(__name__)
 # Import the command handlers
 from commands import (
     help_command,
+    eth_command,
+    btc_command,
+    ada_command,
     trending_command,
-    eth_price_command,
-    eth_percentage_command,
-    btc_price_command,
-    btc_percentage_command,
     gigachad_command,
-    ada_price_command,
-    eth_gas_command,
-    defipulse_command
 )
 
 
@@ -43,15 +39,11 @@ def main():
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("help", help_command))
-    dispatcher.add_handler(CommandHandler("ethgas", eth_gas_command))
-    dispatcher.add_handler(CommandHandler("defipulse", defipulse_command))
+    dispatcher.add_handler(CommandHandler("eth", eth_command))
+    dispatcher.add_handler(CommandHandler("btc", btc_command))
+    dispatcher.add_handler(CommandHandler("ada", ada_command))
     dispatcher.add_handler(CommandHandler("trending", trending_command))
-    dispatcher.add_handler(CommandHandler("ethprice", eth_price_command))
-    dispatcher.add_handler(CommandHandler("ethpercentage", eth_percentage_command))
-    dispatcher.add_handler(CommandHandler("btcprice", btc_price_command))
-    dispatcher.add_handler(CommandHandler("btcpercentage", btc_percentage_command))
     dispatcher.add_handler(CommandHandler("gigachad", gigachad_command))
-    dispatcher.add_handler(CommandHandler("adaprice", ada_price_command))
 
     # Start the Bot
     updater.start_polling()

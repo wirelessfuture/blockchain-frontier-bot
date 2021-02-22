@@ -2,15 +2,19 @@
 from telegram import Update
 from telegram.ext import CallbackContext
 
+# Import parsers
+from parsers import (
+    market_data_parser,
+    eth_gas_price_parser
+)
+
 # Import the coingecko functions
 from coingecko import (
     get_trending_search, 
-    get_eth_price, 
-    get_eth_percentage_change,
-    get_btc_price,
-    get_btc_percentage_change,
-    get_gigachad_prices,
-    get_ada_price
+    get_eth_market_data,
+    get_btc_market_data,
+    get_ada_market_data,
+    get_gigachad_prices
 )
 
 # Import the defipulse functions
@@ -19,19 +23,12 @@ from defipulse import (
     get_defi_pulse_data
 )
 
-# Import our entities
-from entities import (
-    PriceDict,
-    PercentageDict
-)
-
-
 # Only allow whitelisted groups to use command
 def on_message(func: any) -> any:
     """When a message comes in, make sure chat_id is in whitelist."""
-    whitelisted_group = -1001268910811 # Hard-coded for now
+    whitelisted_group = [-1001268910811, 1327445093] # Hard-coded for now
     def is_whitelisted(*args, **kwargs):
-        if args[0].message.chat_id == whitelisted_group:
+        if args[0].message.chat_id in whitelisted_group:
             return func(args[0], args[1])
         else:
             print(args[0].message.chat_id, " not in whitelist!")
@@ -43,107 +40,52 @@ def on_message(func: any) -> any:
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        '/ethgas - Gets the current gas prices\n'\
-        '/defipulse - Gets the current TVL in DeFi\n'\
         '/trending - Latest trending searches\n'\
-        '/ethprice - Price of ETH\n'\
-        '/ethpercentage - ETH price change %\n'\
-        '/btcprice - Price of BTC\n'\
-        '/btcpercentage - BTC price change %\n'\
+        '/eth - Ethereum market data\n'\
+        '/btc - Bitcoin market data\n'\
+        '/ada - Cardano market data\n'\
         '/gigachad - Gigachad R&D\n'\
-        '/adaprice - Price of ADA\n'\
     )
 
 @on_message
-def eth_gas_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /ethgas is issued."""
-    price_keys = [
-        "average",
-        "fast",
-        "fastest"
-    ]
-    new_gas_prices = get_eth_gas_prices()
-    prices = [f'{key}: {value} GWEI\n' for key, value in new_gas_prices.items() if key in price_keys]
-    prices.insert(0, 'ETH Gas Prices\n')
-    update.message.reply_text(''.join(prices))
+def eth_command(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /eth is issued."""
+
+    # Get the current data
+    new_market_data = get_eth_market_data()["market_data"]
+    new_gas_data = get_eth_gas_prices()
+
+    # Parse the market data
+    market_data = market_data_parser(new_market_data, "Ethereum")
+
+    # Gas prices
+    gas_data = eth_gas_price_parser(new_gas_data)
+
+    # Send reply messages
+    update.message.reply_text(text=f''.join(market_data + gas_data))
 
 @on_message
-def defipulse_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /defipulse is issued."""
-    defipulse_data = get_defi_pulse_data()
-    tvl = defipulse_data["All"]["total"]
-    update.message.reply_text("Total Value Locked in Ethereum DeFi:\n${:,} USD".format(tvl))
+def btc_command(update: Update, context: CallbackContext) -> None:
+    # Get the current data
+    new_market_data = get_btc_market_data()["market_data"]
+
+    # Parse the data
+    market_data = market_data_parser(new_market_data, "Bitcoin")
+
+    # Send the reply message
+    update.message.reply_text(text=f''.join(market_data))
 
 @on_message
-def trending_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /trending is issued."""
-    new_trending = get_trending_search()
-    if "error" not in new_trending:
-        tokens = [token["item"]["name"] + "\n" for token in new_trending["coins"]]
-        tokens.insert(0, "Top 7 Searches on Coingecko:\n")
-        update.message.reply_text(f''.join(tokens))
-    else:
-        update.message.reply_text(new_trending["error"])
+def ada_command(update: Update, context: CallbackContext) -> None:
+    """Sends a message when the command /ada is issued."""
+    # Get the current data
+    new_market_data = get_ada_market_data()["market_data"]
 
-@on_message
-def eth_price_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /ethprice is issued."""
-    new_price = get_eth_price()
-    if "error" not in new_price:
-        prices = [f'ETH {currency}: {price} \n' for currency, price in new_price["ethereum"].items()]
-        update.message.reply_text(''.join(prices))
-    else:
-        update.message.reply_text(new_price["error"])
-
-@on_message
-def eth_percentage_command(update: Update, context: CallbackContext) -> None:
-    """Sends a message when the command /percentage is issued."""
-    percentage_keys = [
-        "price_change_percentage_24h",
-        "price_change_percentage_7d",
-        "price_change_percentage_14d",
-        "price_change_percentage_30d",
-        "price_change_percentage_60d",
-        "price_change_percentage_200d",
-        "price_change_percentage_1y",
-    ]
-    new_percentage = get_eth_percentage_change()
-    if "error" not in new_percentage:
-        percentages = [f'{key.split("_")[-1]}: {value}%\n' for key, value in new_percentage["market_data"].items() if key in percentage_keys]
-        percentages.insert(0, 'ETH Price Change %\n')
-        update.message.reply_text(''.join(percentages))
-    else:
-        update.message.reply_text(new_percentage["error"])
-
-@on_message
-def btc_price_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /btcprice is issued."""
-    new_price = get_btc_price()
-    if "error" not in new_price:
-        prices = [f'BTC {currency}: {price} \n' for currency, price in new_price["bitcoin"].items()]
-        update.message.reply_text(''.join(prices))
-    else:
-        update.message.reply_text(new_price["error"])
-
-@on_message
-def btc_percentage_command(update: Update, context: CallbackContext) -> None:
-    """Sends a message when the command /btcpercentage is issued."""
-    percentage_keys = [
-        "price_change_percentage_24h",
-        "price_change_percentage_7d",
-        "price_change_percentage_14d",
-        "price_change_percentage_30d",
-        "price_change_percentage_60d",
-        "price_change_percentage_200d",
-        "price_change_percentage_1y",
-    ]
-    new_percentage = get_btc_percentage_change()
-    if "error" not in new_percentage:
-        percentages = [f'{key.split("_")[-1]}: {value}%\n' for key, value in new_percentage["market_data"].items() if key in percentage_keys]
-        percentages.insert(0, 'BTC Price Change %\n')
-        update.message.reply_text(''.join(percentages))
-    else:
-        update.message.reply_text(new_percentage["error"])
+    # Parse the data
+    market_data = market_data_parser(new_market_data, "Cardano")
+    
+    # Send the reply message
+    update.message.reply_text(text=f''.join(market_data))
 
 @on_message
 def gigachad_command(update: Update, context: CallbackContext) -> None:
@@ -157,11 +99,18 @@ def gigachad_command(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(new_percentage["error"])
 
 @on_message
-def ada_price_command(update: Update, context: CallbackContext) -> None:
-    """Sends a message when the command /adaprice is issued."""
-    new_price = get_ada_price()
-    if "error" not in new_price:
-        prices = [f'ADA {currency}: {price} \n' for currency, price in new_price["cardano"].items()]
-        update.message.reply_text(''.join(prices))
+def trending_command(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /trending is issued."""
+    new_trending = get_trending_search()
+    if "error" not in new_trending:
+        tokens = [token["item"]["name"] + "\n" for token in new_trending["coins"]]
+        tokens.insert(0, "Top 7 Searches on Coingecko:\n")
+        update.message.reply_text(f''.join(tokens))
     else:
-        update.message.reply_text(new_price["error"])
+        update.message.reply_text(new_trending["error"])
+
+@on_message
+def defipulse_command(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /defipulse is issued."""
+    defipulse_data = get_defi_pulse_data()
+    update.message.reply_text("Total Value Locked in Ethereum DeFi:\n${:,} USD".format(tvl))

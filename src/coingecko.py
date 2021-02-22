@@ -17,13 +17,8 @@ def get_trending_search() -> dict:
     return cg.get_search_trending()
 
 @check_server
-def get_eth_price() -> dict:
-    """Get the latest price of Ethereum in various currencies."""
-    return cg.get_price(ids='ethereum', vs_currencies='usd,gbp,czk,aud')
-
-@check_server
-def get_eth_percentage_change() -> dict:
-    """Get the latest Ethereum price percentage change in various time ranges."""
+def get_eth_market_data() -> dict:
+    """Get the latest Ethereum market data."""
     return cg.get_coin_by_id(
         id="ethereum", 
         localization_string=False, 
@@ -35,15 +30,23 @@ def get_eth_percentage_change() -> dict:
     )
 
 @check_server
-def get_btc_price() -> dict:
-    """Get the latest price of Bitcoin in various currencies."""
-    return cg.get_price(ids='bitcoin', vs_currencies='usd,gbp,czk,aud')
-
-@check_server
-def get_btc_percentage_change() -> dict:
-    """Get the latest Bitcoin price percentage change in various time ranges."""
+def get_btc_market_data() -> dict:
+    """Get the latest Bitcoin market data."""
     return cg.get_coin_by_id(
         id="bitcoin", 
+        localization_string=False, 
+        tickers=False, 
+        market_data=True, 
+        community_data=False, 
+        developer_data=False, 
+        sparkline=False
+    )
+
+@check_server
+def get_ada_market_data() -> dict:
+    """Get the latest Bitcoin market data."""
+    return cg.get_coin_by_id(
+        id="cardano", 
         localization_string=False, 
         tickers=False, 
         market_data=True, 
@@ -66,8 +69,3 @@ def get_gigachad_prices() -> dict:
     for token in gigachad_list:
         price_dict[token] = cg.get_price(ids=token, vs_currencies='usd')[token]
     return price_dict
-
-@check_server
-def get_ada_price() -> dict:
-    """Get the latest Ada price."""
-    return cg.get_price(ids='cardano', vs_currencies='usd,gbp,czk,aud')
