@@ -6,3 +6,9 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get --assume-yes update
 apt-cache policy docker-ce
 sudo apt-get --assume-yes install docker-ce
+
+# Login to Docker
+sudo cat $1 | docker login --username $2 --password-stdin
+
+# Docker run
+sudo docker run -t dispatj/blockchain-frontier-bot:latest

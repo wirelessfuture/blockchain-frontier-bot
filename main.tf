@@ -28,21 +28,10 @@ resource "aws_lightsail_instance" "bf_lightsail" {
     destination = "/tmp/launch-script.sh"
   }
 
-  provisioner "file" {
-    source      = "docker-pull.sh"
-    destination = "/tmp/docker-pull.sh"
-  }
-
-  provisioner "file" {
-    source      = "docker-pass.txt"
-    destination = "/tmp/docker-pass.txt"
-  }
-
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/launch-script.sh && chmod +x /tmp/docker-pull.sh",
-      "sudo /tmp/launch-script.sh",
-      "sudo /tmp/docker-pull.sh",
+      "chmod +x /tmp/launch-script.sh",
+      "sudo /tmp/launch-script.sh ${var.dockerPass} ${var.dockerUser}",
     ]
   }
 
