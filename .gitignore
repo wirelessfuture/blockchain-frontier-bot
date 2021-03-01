@@ -12,3 +12,10 @@ venv/
 
 # pycache
 __pycache__/
+
+# pem files
+*.pem
+
+# terraform files
+*.terraform/
+*.terraform.lock.hcl
