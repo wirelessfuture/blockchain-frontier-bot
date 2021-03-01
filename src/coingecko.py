@@ -5,9 +5,12 @@ cg = CoinGeckoAPI()
 def check_server(func: any) -> any:
     """Decorator for checking the coingecko API status before each request"""
     def wrapper_is_server_ok():
-        if cg.ping()["gecko_says"] == "(V3) To the Moon!":
-            return func()
-        else:
+        try:
+            if cg.ping()["gecko_says"] == "(V3) To the Moon!":
+                return func()
+            else:
+                return {"error": "Server is currently experiencing issues"}
+        except Exception:
             return {"error": "Server is currently experiencing issues"}
     return wrapper_is_server_ok
 
@@ -59,7 +62,6 @@ def get_ada_market_data() -> dict:
 def get_gigachad_prices() -> dict:
     """Get the latest Gigachad list prices."""
     gigachad_list = [
-        "flash-stake",
         "xio",
         "mettalex",
         "origintrail",
