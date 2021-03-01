@@ -1,5 +1,5 @@
 def market_data_parser(market_data: dict, coin: str) -> list:
-    """Takes a dict with market data and parses the result."""
+    """Takes a dict with market data and parses the result as a list."""
     # Current Prices
     currency_keys = ["aud", "usd", "czk", "gbp"]
     current_prices = [f'{key.upper()}: {value}\n' for key, value in market_data["current_price"].items() if key in currency_keys]
@@ -20,7 +20,7 @@ def market_data_parser(market_data: dict, coin: str) -> list:
     return current_prices + price_change_percentage_24h + price_change_24h
 
 def eth_gas_price_parser(gas_data: dict) -> list:
-    """Takes a dict with gas price data and parses the result."""
+    """Takes a dict with gas price data and parses the result as a list."""
     price_keys = ["average", "fast", "fastest"]
     gas_prices = [f'{key}: {int(value/10)} GWEI\n' for key, value in gas_data.items() if key in price_keys]
     gas_prices.insert(0, 'ETH Gas Prices\n')
