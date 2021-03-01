@@ -50,42 +50,43 @@ def help_command(update: Update, context: CallbackContext) -> None:
 @on_message
 def eth_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /eth is issued."""
-
     # Get the current data
     new_market_data = get_eth_market_data()["market_data"]
     new_gas_data = get_eth_gas_prices()
-
-    # Parse the market data
-    market_data = market_data_parser(new_market_data, "Ethereum")
-
-    # Gas prices
-    gas_data = eth_gas_price_parser(new_gas_data)
-
-    # Send reply messages
-    update.message.reply_text(text=f''.join(market_data + gas_data))
+    if "error" not in new_market_data:
+        # Parse the market data
+        market_data = market_data_parser(new_market_data, "Ethereum")
+        # Gas prices
+        gas_data = eth_gas_price_parser(new_gas_data)
+        # Send reply messages
+        update.message.reply_text(text=f''.join(market_data + gas_data))
+    else:
+        update.message.reply_text(new_market_data["error"])
 
 @on_message
 def btc_command(update: Update, context: CallbackContext) -> None:
     # Get the current data
     new_market_data = get_btc_market_data()["market_data"]
-
-    # Parse the data
-    market_data = market_data_parser(new_market_data, "Bitcoin")
-
-    # Send the reply message
-    update.message.reply_text(text=f''.join(market_data))
+    if "error" not in new_market_data:
+        # Parse the data
+        market_data = market_data_parser(new_market_data, "Bitcoin")
+        # Send the reply message
+        update.message.reply_text(text=f''.join(market_data))
+    else:
+        update.message.reply_text(new_market_data["error"])
 
 @on_message
 def ada_command(update: Update, context: CallbackContext) -> None:
     """Sends a message when the command /ada is issued."""
     # Get the current data
-    new_market_data = get_ada_market_data()["market_data"]
-
-    # Parse the data
-    market_data = market_data_parser(new_market_data, "Cardano")
-    
-    # Send the reply message
-    update.message.reply_text(text=f''.join(market_data))
+    new_market_data = get_ada_market_data()
+    if "error" not in new_market_data:
+        # Parse the data
+        market_data = market_data_parser(new_market_data["market_data"], "Cardano")
+        # Send the reply message
+        update.message.reply_text(text=f''.join(market_data))
+    else:
+        update.message.reply_text(new_market_data["error"])
 
 @on_message
 def gigachad_command(update: Update, context: CallbackContext) -> None:
@@ -96,7 +97,7 @@ def gigachad_command(update: Update, context: CallbackContext) -> None:
         tokens.insert(0, "Gigachad Research Prices:\n")
         update.message.reply_text(f''.join(tokens))
     else:
-        update.message.reply_text(new_percentage["error"])
+        update.message.reply_text(new_gigachad["error"])
 
 @on_message
 def trending_command(update: Update, context: CallbackContext) -> None:
@@ -108,9 +109,3 @@ def trending_command(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(f''.join(tokens))
     else:
         update.message.reply_text(new_trending["error"])
-
-@on_message
-def defipulse_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /defipulse is issued."""
-    defipulse_data = get_defi_pulse_data()
-    update.message.reply_text("Total Value Locked in Ethereum DeFi:\n${:,} USD".format(tvl))
