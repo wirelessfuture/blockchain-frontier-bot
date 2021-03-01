@@ -1,11 +1,9 @@
 variable "keyName" {
-  default = "blockchain-frontier-bot"
-  type    = string
+  type = string
 }
 
 variable "keyPath" {
-  default = "~/blockchain-frontier-bot.pem"
-  type    = string
+  type = string
 }
 
 variable "dockerPass" {
