@@ -31,7 +31,7 @@ resource "aws_lightsail_instance" "bf_lightsail" {
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/launch-script.sh",
-      "sudo /tmp/launch-script.sh ${var.dockerPass} ${var.dockerUser}",
+      "sudo /tmp/launch-script.sh '${var.dockerPass}' '${var.dockerUser}'",
     ]
   }
 
