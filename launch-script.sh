@@ -12,6 +12,6 @@ sudo apt-get --assume-yes install docker-ce
 sudo echo $1 | docker login --username $2 --password-stdin
 
 # Docker run
-sudo docker pull -t dispatj/blockchain-frontier-bot:latest
+sudo docker pull dispatj/blockchain-frontier-bot:latest
 
 exit 0
