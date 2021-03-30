@@ -23,6 +23,7 @@ from commands import (
     help_command,
     eth_command,
     btc_command,
+    ttt_command,
     ada_command,
     trending_command,
     gigachad_command,
@@ -41,6 +42,7 @@ def main():
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("eth", eth_command))
     dispatcher.add_handler(CommandHandler("btc", btc_command))
+    dispatcher.add_handler(CommandHandler("ttt", ttt_command))
     dispatcher.add_handler(CommandHandler("ada", ada_command))
     dispatcher.add_handler(CommandHandler("trending", trending_command))
     dispatcher.add_handler(CommandHandler("gigachad", gigachad_command))
