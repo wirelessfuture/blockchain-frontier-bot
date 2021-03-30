@@ -27,3 +27,9 @@ def eth_gas_price_parser(gas_data: dict) -> list:
     gas_prices.append('\n')
 
     return gas_prices
+
+def defi_pulse_parser(defipulse_data: dict) -> list:
+    """Takes a dict with defipulse data and parses the result as a list."""
+    keys = defipulse_data.keys()
+    sub_keys = ["total", "dominance_name", "dominance_value", "dominance_pct"]
+    

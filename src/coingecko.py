@@ -46,6 +46,19 @@ def get_btc_market_data() -> dict:
     )
 
 @check_server
+def get_ttt_market_data() -> dict:
+    """Get the latest Tapcoin market data."""
+    return cg.get_coin_by_id(
+        id="tapcoin", 
+        localization_string=False, 
+        tickers=False, 
+        market_data=True, 
+        community_data=False, 
+        developer_data=False, 
+        sparkline=False
+    )
+
+@check_server
 def get_ada_market_data() -> dict:
     """Get the latest Bitcoin market data."""
     return cg.get_coin_by_id(

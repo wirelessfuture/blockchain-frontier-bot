@@ -19,6 +19,7 @@ from coingecko import (
     get_trending_search, 
     get_eth_market_data,
     get_btc_market_data,
+    get_ttt_market_data,
     get_ada_market_data,
     get_gigachad_prices
 )
@@ -49,6 +50,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
         '/trending - Latest trending searches\n'\
         '/eth - Ethereum market data\n'\
         '/btc - Bitcoin market data\n'\
+        '/ttt - Tapcoin market data\n'\
         '/ada - Cardano market data\n'\
         '/gigachad - Gigachad R&D\n'\
     )
@@ -76,6 +78,18 @@ def btc_command(update: Update, context: CallbackContext) -> None:
     if "error" not in new_market_data:
         # Parse the data
         market_data = market_data_parser(new_market_data, "Bitcoin")
+        # Send the reply message
+        update.message.reply_text(text=f''.join(market_data))
+    else:
+        update.message.reply_text(new_market_data["error"])
+
+@on_message
+def ttt_command(update: Update, context: CallbackContext) -> None:
+    # Get the current data
+    new_market_data = get_ttt_market_data()["market_data"]
+    if "error" not in new_market_data:
+        # Parse the data
+        market_data = market_data_parser(new_market_data, "Tapcoin")
         # Send the reply message
         update.message.reply_text(text=f''.join(market_data))
     else:
