@@ -8,9 +8,6 @@ sudo apt-get --assume-yes update
 apt-cache policy docker-ce
 sudo apt-get --assume-yes install docker-ce
 
-# Login to Docker
-sudo echo $1 | docker login --username $2 --password-stdin
-
 # Docker run
 sudo docker pull dispatj/blockchain-frontier-bot:latest
 
