@@ -17,10 +17,7 @@ from parsers import (
 # Import the coingecko functions
 from coingecko import (
     get_trending_search, 
-    get_eth_market_data,
-    get_btc_market_data,
-    get_ttt_market_data,
-    get_ada_market_data,
+    get_market_data,
     get_gigachad_prices
 )
 
@@ -47,66 +44,31 @@ def on_message(func: any) -> any:
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        '/trending - Latest trending searches\n'\
-        '/eth - Ethereum market data\n'\
-        '/btc - Bitcoin market data\n'\
-        '/ttt - Tapcoin market data\n'\
-        '/ada - Cardano market data\n'\
+        '/price <search-term> - Get the latest market data for the search result\n'\
         '/gigachad - Gigachad R&D\n'\
+        '/trending - Latest trending searches\n'\
     )
 
 @on_message
-def eth_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /eth is issued."""
-    # Get the current data
-    new_market_data = get_eth_market_data()["market_data"]
-    new_gas_data = get_eth_gas_prices()
-    if "error" not in new_market_data:
-        # Parse the market data
-        market_data = market_data_parser(new_market_data, "Ethereum")
-        # Gas prices
-        gas_data = eth_gas_price_parser(new_gas_data)
-        # Send reply messages
-        update.message.reply_text(text=f''.join(market_data + gas_data))
-    else:
-        update.message.reply_text(new_market_data["error"])
-
-@on_message
-def btc_command(update: Update, context: CallbackContext) -> None:
-    # Get the current data
-    new_market_data = get_btc_market_data()["market_data"]
-    if "error" not in new_market_data:
-        # Parse the data
-        market_data = market_data_parser(new_market_data, "Bitcoin")
-        # Send the reply message
-        update.message.reply_text(text=f''.join(market_data))
-    else:
-        update.message.reply_text(new_market_data["error"])
-
-@on_message
-def ttt_command(update: Update, context: CallbackContext) -> None:
-    # Get the current data
-    new_market_data = get_ttt_market_data()["market_data"]
-    if "error" not in new_market_data:
-        # Parse the data
-        market_data = market_data_parser(new_market_data, "Tapcoin")
-        # Send the reply message
-        update.message.reply_text(text=f''.join(market_data))
-    else:
-        update.message.reply_text(new_market_data["error"])
-
-@on_message
-def ada_command(update: Update, context: CallbackContext) -> None:
-    """Sends a message when the command /ada is issued."""
-    # Get the current data
-    new_market_data = get_ada_market_data()
-    if "error" not in new_market_data:
-        # Parse the data
-        market_data = market_data_parser(new_market_data["market_data"], "Cardano")
-        # Send the reply message
-        update.message.reply_text(text=f''.join(market_data))
-    else:
-        update.message.reply_text(new_market_data["error"])
+def price_command(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /price is issued."""
+    try:
+        search_term = str(context.args[0])
+        new_market_data = get_market_data(search_term)["market_data"]
+        new_gas_data = get_eth_gas_prices()
+        if "error" not in new_market_data:
+            # Parse the market data
+            market_data = market_data_parser(new_market_data, search_term.upper())
+            # Gas prices
+            gas_data = eth_gas_price_parser(new_gas_data)
+            # Send reply messages
+            update.message.reply_text(text=f''.join(market_data + gas_data))
+        else:
+            update.message.reply_text(new_market_data["error"])
+    except (IndexError, ValueError):
+        update.message.reply_text('Usage: /price <search-term>')
+    except (KeyError):
+        update.message.reply_text('I am sorry, I could not find that. 🤷‍♂️')
 
 @on_message
 def gigachad_command(update: Update, context: CallbackContext) -> None:
