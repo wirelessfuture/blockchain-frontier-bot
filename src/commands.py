@@ -72,7 +72,7 @@ def price_command(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('I am sorry, I could not find that. 🤷‍♂️')
 
 @on_message
-def ethereum_gas_command(update: Update, context: CallbackContext) -> None:
+def eth_gas_command(update: Update, context: CallbackContext) -> None:
     """Sends a message when the command /ethgas is issued."""
     new_gas_data = get_eth_gas_prices()
     gas_data = eth_gas_price_parser(new_gas_data)
