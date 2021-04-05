@@ -48,7 +48,8 @@ def on_message(func: any) -> any:
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        '/price <search-term> - Get the latest market data for the search result\n'\
+        '/price <search-term> - Get the latest market data\n'\
+        '/ethgas - Get the latest gas price\n'\
         '/gigachad - Gigachad R&D\n'\
         '/trending - Latest trending searches\n'\
     )
