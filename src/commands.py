@@ -55,12 +55,9 @@ def price_command(update: Update, context: CallbackContext) -> None:
     try:
         search_term = str(context.args[0])
         new_market_data = get_market_data(search_term)["market_data"]
-        new_gas_data = get_eth_gas_prices()
         if "error" not in new_market_data:
             # Parse the market data
             market_data = market_data_parser(new_market_data, search_term.upper())
-            # Gas prices
-            gas_data = eth_gas_price_parser(new_gas_data)
             # Send reply messages
             update.message.reply_text(text=f''.join(market_data + gas_data))
         else:
@@ -69,6 +66,13 @@ def price_command(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('Usage: /price <search-term>')
     except (KeyError):
         update.message.reply_text('I am sorry, I could not find that. 🤷‍♂️')
+
+@on_message
+def ethereum_gas_command(update: Update, context: CallbackContext) -> None:
+    """Sends a message when the command /ethgas is issued."""
+    new_gas_data = get_eth_gas_prices()
+    gas_data = eth_gas_price_parser(new_gas_data)
+    update.message.reply_text(text=f''.join(gas_data))
 
 @on_message
 def gigachad_command(update: Update, context: CallbackContext) -> None:

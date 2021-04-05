@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 from commands import (
     help_command,
     price_command,
+    eth_gas_command,
     trending_command,
     gigachad_command,
 )
@@ -38,6 +39,7 @@ def main():
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.add_handler(CommandHandler("price", price_command))
+    dispatcher.add_handler(CommandHandler("ethgas", eth_gas_command))
     dispatcher.add_handler(CommandHandler("trending", trending_command))
     dispatcher.add_handler(CommandHandler("gigachad", gigachad_command))
 
