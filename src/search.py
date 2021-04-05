@@ -9,3 +9,4 @@ def search(term: str) -> str:
                 return term
             if key == "symbol" and value.lower() == term.lower():
                 return coin["id"]
+    return term
