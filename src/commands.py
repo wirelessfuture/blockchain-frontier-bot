@@ -63,7 +63,7 @@ def price_command(update: Update, context: CallbackContext) -> None:
             # Parse the market data
             market_data = market_data_parser(new_market_data, search_term.upper())
             # Send reply messages
-            update.message.reply_text(text=f''.join(market_data + gas_data))
+            update.message.reply_text(text=f''.join(market_data))
         else:
             update.message.reply_text(new_market_data["error"])
     except (IndexError, ValueError):
