@@ -27,6 +27,10 @@ from defipulse import (
     get_defi_pulse_data
 )
 
+# Import Coin Search
+from search import search
+
+
 # Only allow whitelisted groups to use command
 def on_message(func: any) -> any:
     """When a message comes in, make sure chat_id is in whitelist."""
@@ -53,7 +57,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
 def price_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /price is issued."""
     try:
-        search_term = str(context.args[0])
+        search_term = search(str(context.args[0]))
         new_market_data = get_market_data(search_term)["market_data"]
         if "error" not in new_market_data:
             # Parse the market data

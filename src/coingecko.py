@@ -11,7 +11,7 @@ def check_server(func: any) -> any:
             else:
                 return {"error": "Server is currently experiencing issues"}
         except Exception as e:
-            return {"error": "Could not find coin with the given id"}
+            return {"error": "Something went wrong. 👀"}
     return wrapper_is_server_ok
 
 @check_server
@@ -31,6 +31,11 @@ def get_market_data(id: str) -> dict:
         developer_data=False, 
         sparkline=False
     )
+
+@check_server
+def get_coins() -> dict:
+    """Retrieves all the coins listed on coingecko."""
+    return cg.get_coins_list()
 
 @check_server
 def get_gigachad_prices() -> dict:
