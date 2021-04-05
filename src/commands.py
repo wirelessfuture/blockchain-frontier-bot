@@ -48,6 +48,7 @@ def on_message(func: any) -> any:
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
+        '🤖 Frontier Bot Commands 🤖\n'\
         '/price <search-term> - Get the latest market data\n'\
         '/ethgas - Get the latest gas price\n'\
         '/gigachad - Gigachad R&D\n'\
@@ -85,7 +86,7 @@ def gigachad_command(update: Update, context: CallbackContext) -> None:
     new_gigachad = get_gigachad_prices()
     if "error" not in new_gigachad:
         tokens = [token + ': $' + str(price['usd']) + '\n' for token, price in new_gigachad.items()]
-        tokens.insert(0, "Gigachad Research Prices:\n")
+        tokens.insert(0, "🐳 Gigachad Research Prices 🐳\n")
         update.message.reply_text(f''.join(tokens))
     else:
         update.message.reply_text(new_gigachad["error"])
@@ -96,7 +97,7 @@ def trending_command(update: Update, context: CallbackContext) -> None:
     new_trending = get_trending_search()
     if "error" not in new_trending:
         tokens = [token["item"]["name"] + "\n" for token in new_trending["coins"]]
-        tokens.insert(0, "Top 7 Searches on Coingecko:\n")
+        tokens.insert(0, "🔎 Top 7 Searches on Coingecko 🔎\n")
         update.message.reply_text(f''.join(tokens))
     else:
         update.message.reply_text(new_trending["error"])
