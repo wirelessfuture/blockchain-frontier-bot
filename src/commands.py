@@ -34,7 +34,7 @@ from search import search
 # Only allow whitelisted groups to use command
 def on_message(func: any) -> any:
     """When a message comes in, make sure chat_id is in whitelist."""
-    whitelisted_group = [int(os.getenv("TELEGRAM_GROUP_CHAT_ID")), int(os.getenv("TELEGRAM_BOT_CHAT_ID"))] # Hard-coded for now
+    whitelisted_group = [int(os.getenv("TELEGRAM_GROUP_CHAT_ID")), int(os.getenv("TELEGRAM_BOT_CHAT_ID")), int(os.getenv("WIVERS_CHAT_ID"))] # Hard-coded for now
     def is_whitelisted(*args, **kwargs):
         if args[0].message.chat_id in whitelisted_group:
             return func(args[0], args[1])
