@@ -7,9 +7,6 @@ venv/
 # env files
 *.env
 
-# mypy cache
-.mypy_cache/
-
 # pycache
 __pycache__/
 

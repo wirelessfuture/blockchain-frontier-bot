@@ -1,5 +1,6 @@
 from coingecko import get_coins
 
+
 def search(term: str) -> str:
     """Search for a coin using either ID or Symbol to make search more robust."""
     coins = get_coins()
