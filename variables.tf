@@ -5,11 +5,3 @@ variable "keyName" {
 variable "keyPath" {
   type = string
 }
-
-variable "dockerPass" {
-  type = string
-}
-
-variable "dockerUser" {
-  type = string
-}
